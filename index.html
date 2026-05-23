@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TripTile - 크레스티드 게코 분양</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:sans-serif;
+}
+
+body{
+  background:#fafafa;
+  color:#111;
+  line-height:1.6;
+}
+
+header{
+  position:sticky;
+  top:0;
+  background:white;
+  border-bottom:1px solid #eee;
+  padding:15px 20px;
+  z-index:100;
+}
+
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:0 20px;
+}
+
+.top-profile{
+  text-align:center;
+  padding:40px 20px 20px;
+}
+
+.top-profile img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.hero-content{
+  text-align:center;
+  padding:20px;
+}
+
+.hero-content h1{
+  font-size:42px;
+  line-height:1.15;
+  margin-bottom:20px;
+}
+
+.hero-content p{
+  font-size:18px;
+  color:#444;
+  max-width:750px;
+  margin:auto;
+}
+
+.contact-box{
+  background:#f0f8f0;
+  padding:25px;
+  border-radius:24px;
+  max-width:520px;
+  margin:35px auto;
+  text-align:left;
+}
+
+.section-title{
+  font-size:40px;
+  text-align:center;
+  margin:80px 0 20px;
+}
+
+.sub{
+  text-align:center;
+  color:#666;
+  margin-bottom:50px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:30px;
+}
+
+@media(max-width:1100px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:700px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+
+.card{
+  background:white;
+  border-radius:28px;
+  overflow:hidden;
+  border:1px solid #eee;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+.image-container{
+  position:relative;
+  background:#f7f7f7;
+}
+
+.card img{
+  width:100%;
+  height:360px;
+  object-fit:contain;
+  display:none;
+}
+
+.slide-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,0.6);
+  color:white;
+  border:none;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.prev{
+  left:15px;
+}
+
+.next{
+  right:15px;
+}
+
+.card-content{
+  padding:24px;
+}
+
+.status{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:16px;
+}
+
+.sale{
+  background:#16a34a;
+  color:white;
+}
+
+.sold{
+  background:#444;
+  color:white;
+}
+
+.detail{
+  margin:7px 0;
+  color:#444;
+}
+
+textarea{
+  width:100%;
+  height:110px;
+  border:1px solid #ddd;
+  border-radius:16px;
+  padding:15px;
+  resize:none;
+  margin-top:18px;
+}
+
+.send,
+.adopt-btn{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.send{
+  background:#16a34a;
+  color:white;
+}
+
+.adopt-btn{
+  background:#8b5cf6;
+  color:white;
+}
+
+.admin-btn{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  background:#111;
+  color:white;
+  padding:15px 24px;
+  border-radius:50px;
+  cursor:pointer;
+  font-weight:bold;
+  z-index:999;
+}
+
+footer{
+  margin-top:100px;
+  background:#111;
+  color:white;
+  padding:60px 20px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-profile">
+  <img id="mainLogo" src="https://i.imgur.com/2DhmtJ4.png">
+</div>
+
+<header>
+  <div class="container" style="text-align:center;">
+    <h2>TripTile</h2>
+    <p>크레스티드 게코 분양</p>
+  </div>
+</header>
+
+<section class="container hero-content">
+
+<h1>
+건강하고 순한<br>
+크레스티드 게코 분양
+</h1>
+
+<p>
+입문자분들을 위한 관리하기 쉽고 성격 좋은 개체 위주로 분양합니다.
+</p>
+
+<div class="contact-box">
+  <p><strong>📞 010-2480-6369</strong></p>
+  <p><strong>📩 @trip_tile26</strong></p>
+
+  <p style="margin-top:12px;color:#16a34a;font-weight:bold;">
+    문자 또는 인스타 DM 보내주시면 빠른 시일 내 답장드립니다.
+  </p>
+</div>
+
+<p style="margin-top:25px;">
+  ✅ 부산 명지국제 직접 방문 가능<br>
+  직접 와서 개체 확인 후 분양 가능합니다.
+</p>
+
+<div style="margin-top:35px;">
+  <a href="tel:01024806369"
+  style="background:#111;color:white;padding:14px 26px;border-radius:50px;font-weight:bold;text-decoration:none;">
+  📞 전화하기
+  </a>
+
+  <a href="https://instagram.com/trip_tile26"
+  target="_blank"
+  style="border:2px solid #111;color:#111;padding:14px 26px;border-radius:50px;font-weight:bold;text-decoration:none;margin-left:10px;">
+  📩 인스타 DM
+  </a>
+</div>
+
+</section>
+
+<section class="container">
+
+<h2 class="section-title">현재 분양 개체</h2>
+
+<p class="sub">
+입문자 추천 • 건강한 개체 • 직접 확인 가능
+</p>
+
+<div class="grid" id="geckoGrid"></div>
+
+</section>
+
+<div class="admin-btn" onclick="adminLogin()">
+관리자
+</div>
+
+<footer>
+  <h2>TripTile</h2>
+
+  <p style="margin-top:20px;">
+    📞 010-2480-6369<br>
+    📩 @trip_tile26
+  </p>
+
+  <p style="margin-top:15px;">
+    부산 명지국제 • 직접 방문 환영
+  </p>
+</footer>
+
+<script>
+
+const ADMIN_PASSWORD = "junyung2010!";
+
+let geckos = JSON.parse(localStorage.getItem('geckos')) || [];
+
+let logoUrl =
+localStorage.getItem('logoUrl') ||
+"https://i.imgur.com/2DhmtJ4.png";
+
+function saveGeckos(){
+  localStorage.setItem('geckos', JSON.stringify(geckos));
+}
+
+function updateLogo(){
+  document.getElementById('mainLogo').src = logoUrl;
+}
+
+function fileToBase64(file){
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+
+    reader.onload = ()=>{
+      resolve(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderGeckos(){
+
+  const grid = document.getElementById('geckoGrid');
+
+  grid.innerHTML = '';
+
+  const maxDisplay = geckos.slice(0, 9);
+
+  maxDisplay.forEach((gecko,index)=>{
+
+    const slidesHTML = gecko.images.map(src=>
+      `<img src="${src}">`
+    ).join('');
+
+    const card = document.createElement('div');
+
+    card.className = 'card';
+
+    card.innerHTML = `
+
+      <div class="image-container" data-index="${index}">
+
+        ${slidesHTML}
+
+        ${gecko.images.length > 1 ? `
+          <button class="slide-btn prev" onclick="prevSlide(${index})">←</button>
+          <button class="slide-btn next" onclick="nextSlide(${index})">→</button>
+        ` : ''}
+
+      </div>
+
+      <div class="card-content">
+
+        <span class="status ${gecko.status === 'sale' ? 'sale' : 'sold'}">
+          ${gecko.status === 'sale'
+            ? '🟢 분양중'
+            : '⚫ 분양완료'}
+        </span>
+
+        <h3>${gecko.name}</h3>
+
+        <p class="detail">💰 ${gecko.price}</p>
+        <p class="detail">⚖️ ${gecko.weight}</p>
+        <p class="detail">📅 ${gecko.birth}</p>
+        <p class="detail">🚹 ${gecko.gender}</p>
+        <p class="detail">${gecko.desc}</p>
+
+        ${gecko.status === 'sale' ? `
+
+          <textarea placeholder="문의 내용"></textarea>
+
+          <button class="send">
+            문의 보내기
+          </button>
+
+          <button class="adopt-btn"
+          onclick="showAdoptOptions(${index})">
+            🐾 입양하기
+          </button>
+
+        ` : ''}
+
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+    const firstImg = card.querySelector('img');
+
+    if(firstImg){
+      firstImg.style.display = 'block';
+    }
+
+  });
+
+}
+
+let currentSlideIndex = {};
+
+function showSlide(container,idx){
+
+  const imgs = container.querySelectorAll('img');
+
+  imgs.forEach((img,i)=>{
+    img.style.display = i === idx ? 'block' : 'none';
+  });
+
+}
+
+function prevSlide(i){
+
+  const container =
+  document.querySelector(`.image-container[data-index="${i}"]`);
+
+  const imgs = container.querySelectorAll('img');
+
+  currentSlideIndex[i] =
+  (currentSlideIndex[i] || 0) - 1;
+
+  if(currentSlideIndex[i] < 0){
+    currentSlideIndex[i] = imgs.length - 1;
+  }
+
+  showSlide(container,currentSlideIndex[i]);
+
+}
+
+function nextSlide(i){
+
+  const container =
+  document.querySelector(`.image-container[data-index="${i}"]`);
+
+  const imgs = container.querySelectorAll('img');
+
+  currentSlideIndex[i] =
+  (currentSlideIndex[i] || 0) + 1;
+
+  if(currentSlideIndex[i] >= imgs.length){
+    currentSlideIndex[i] = 0;
+  }
+
+  showSlide(container,currentSlideIndex[i]);
+
+}
+
+function adminLogin(){
+
+  const pw = prompt("관리자 비밀번호");
+
+  if(pw === ADMIN_PASSWORD){
+    adminPanel();
+  }else{
+    alert("비밀번호가 틀렸습니다.");
+  }
+
+}
+
+function adminPanel(){
+
+  if(document.getElementById('adminOverlay')) return;
+
+  const div = document.createElement('div');
+
+  div.id = 'adminOverlay';
+
+  div.innerHTML = `
+
+  <div style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.92);
+  z-index:9999;
+  overflow:auto;
+  padding:30px;
+  ">
+
+    <div style="
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:24px;
+    ">
+
+      <h2>관리자 페이지</h2>
+
+      <button onclick="addGecko()"
+      style="
+      padding:12px 20px;
+      background:#16a34a;
+      color:white;
+      border:none;
+      border-radius:12px;
+      margin-top:15px;
+      cursor:pointer;
+      ">
+      새 개체 등록
+      </button>
+
+      <button onclick="closeAdmin()"
+      style="
+      padding:12px 20px;
+      background:#444;
+      color:white;
+      border:none;
+      border-radius:12px;
+      margin-top:15px;
+      margin-left:10px;
+      cursor:pointer;
+      ">
+      닫기
+      </button>
+
+      <div id="adminList" style="margin-top:30px;"></div>
+
+    </div>
+
+  </div>
+  `;
+
+  document.body.appendChild(div);
+
+  renderAdminList();
+
+}
+
+function closeAdmin(){
+
+  const overlay =
+  document.getElementById('adminOverlay');
+
+  if(overlay){
+    overlay.remove();
+  }
+
+}
+
+function renderAdminList(){
+
+  const container =
+  document.getElementById('adminList');
+
+  let html = '';
+
+  geckos.forEach((g,i)=>{
+
+    html += `
+
+    <div style="
+    border:1px solid #ddd;
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:15px;
+    ">
+
+      <strong>${g.name}</strong>
+
+      <br><br>
+
+      <button onclick="toggleStatus(${i})">
+        상태 변경
+      </button>
+
+      <button onclick="deleteGecko(${i})"
+      style="color:red;margin-left:10px;">
+        삭제
+      </button>
+
+    </div>
+    `;
+
+  });
+
+  container.innerHTML = html;
+
+}
+
+function toggleStatus(i){
+
+  geckos[i].status =
+  geckos[i].status === 'sale'
+  ? 'sold'
+  : 'sale';
+
+  saveGeckos();
+
+  renderGeckos();
+
+  renderAdminList();
+
+}
+
+async function addGecko(){
+
+  const name = prompt("개체 이름");
+
+  if(!name) return;
+
+  const input = document.createElement('input');
+
+  input.type = 'file';
+
+  input.accept = 'image/*';
+
+  input.multiple = true;
+
+  input.onchange = async ()=>{
+
+    const images = [];
+
+    for(let file of input.files){
+
+      images.push(await fileToBase64(file));
+
+    }
+
+    const newGecko = {
+
+      id: Date.now(),
+
+      name:name,
+
+      price:prompt("가격") || "35만원",
+
+      weight:prompt("그램수") || "18g",
+
+      birth:prompt("태어난 날짜") || "2025-01-01",
+
+      gender:prompt("성별") || "수컷",
+
+      desc:prompt("설명") || "입문자 추천 개체",
+
+      status:'sale',
+
+      images:images
+
+    };
+
+    geckos.unshift(newGecko);
+
+    saveGeckos();
+
+    renderGeckos();
+
+    renderAdminList();
+
+    alert("✅ 등록 완료");
+
+  };
+
+  input.click();
+
+}
+
+function deleteGecko(i){
+
+  if(confirm("삭제하시겠습니까?")){
+
+    geckos.splice(i,1);
+
+    saveGeckos();
+
+    renderGeckos();
+
+    renderAdminList();
+
+  }
+
+}
+
+updateLogo();
+
+renderGeckos();
+
+</script>
+
+</body>
+</html>
