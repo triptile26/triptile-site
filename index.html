@@ -1,0 +1,552 @@
+<script>
+const ADMIN_PASSWORD = "junyung2010!";
+
+// 저장 데이터
+let geckos = JSON.parse(localStorage.getItem('geckos')) || [{
+  id: 1,
+  name: "릴리 화이트",
+  price: "35만원",
+  weight: "18g",
+  birth: "2025-02-14",
+  gender: "수컷",
+  status: "sale",
+  images: ["https://images.unsplash.com/photo-1549488344-cbb6c34cf08b?q=80&w=1200"],
+  desc: "입문자도 키우기 좋은 순하고 건강한 개체입니다."
+}];
+
+let inquiries = JSON.parse(localStorage.getItem('inquiries')) || [];
+let logoUrl = localStorage.getItem('logoUrl') || "https://i.imgur.com/2DhmtJ4.png";
+
+// 저장 함수
+function saveGeckos() {
+  try {
+    localStorage.setItem('geckos', JSON.stringify(geckos));
+  } catch (e) {
+    alert("⚠️ 저장공간이 부족합니다.\n사진 크기를 줄여주세요.");
+  }
+}
+
+function saveInquiries() {
+  localStorage.setItem('inquiries', JSON.stringify(inquiries));
+}
+
+function updateLogo() {
+  document.getElementById('mainLogo').src = logoUrl;
+}
+
+// ======================
+// 이미지 압축 기능
+// ======================
+function fileToBase64(file) {
+  return new Promise((resolve) => {
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      img.src = e.target.result;
+    };
+
+    img.onload = () => {
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const MAX_WIDTH = 700;
+
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // 압축률 0.6
+      const compressed = canvas.toDataURL('image/jpeg', 0.6);
+
+      resolve(compressed);
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+// ======================
+// 개체 렌더링
+// ======================
+function renderGeckos() {
+
+  const grid = document.getElementById('geckoGrid');
+  grid.innerHTML = '';
+
+  geckos.forEach((gecko, index) => {
+
+    let slidesHTML = gecko.images.map(src =>
+      `<img src="${src}" style="display:none;width:100%;height:auto;max-height:380px;object-fit:contain;">`
+    ).join('');
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <div class="image-container" data-index="${index}">
+        ${slidesHTML}
+
+        ${gecko.images.length > 1 ? `
+          <button class="slide-btn prev" onclick="prevSlide(${index})">←</button>
+          <button class="slide-btn next" onclick="nextSlide(${index})">→</button>
+        ` : ''}
+      </div>
+
+      <div class="card-content">
+
+        <span class="status ${gecko.status}">
+          ${gecko.status === 'sale'
+            ? '🟢 분양중'
+            : '⚫ 분양완료'}
+        </span>
+
+        <h3>${gecko.name}</h3>
+
+        <p class="detail">💰 ${gecko.price}</p>
+        <p class="detail">⚖️ ${gecko.weight}</p>
+        <p class="detail">📅 ${gecko.birth}</p>
+        <p class="detail">🚹 ${gecko.gender}</p>
+        <p class="detail">${gecko.desc}</p>
+
+        ${gecko.status === 'sale' ? `
+          <textarea id="msg-${index}" placeholder="문의 내용"></textarea>
+
+          <button class="send"
+            onclick="sendInquiry('${gecko.name}', ${index})">
+            문의 보내기
+          </button>
+
+          <button class="adopt-btn"
+            onclick="showAdoptOptions(${index})">
+            🐾 입양하기
+          </button>
+        ` : ''}
+
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+    const firstImg = card.querySelector('img');
+    if (firstImg) firstImg.style.display = 'block';
+  });
+}
+
+// ======================
+// 슬라이드
+// ======================
+let currentSlideIndex = {};
+
+function prevSlide(i) {
+
+  const container = document.querySelector(
+    `.image-container[data-index="${i}"]`
+  );
+
+  const imgs = container.querySelectorAll('img');
+
+  currentSlideIndex[i] = (currentSlideIndex[i] || 0) - 1;
+
+  if (currentSlideIndex[i] < 0) {
+    currentSlideIndex[i] = imgs.length - 1;
+  }
+
+  showSlide(container, currentSlideIndex[i]);
+}
+
+function nextSlide(i) {
+
+  const container = document.querySelector(
+    `.image-container[data-index="${i}"]`
+  );
+
+  const imgs = container.querySelectorAll('img');
+
+  currentSlideIndex[i] = (currentSlideIndex[i] || 0) + 1;
+
+  if (currentSlideIndex[i] >= imgs.length) {
+    currentSlideIndex[i] = 0;
+  }
+
+  showSlide(container, currentSlideIndex[i]);
+}
+
+function showSlide(container, idx) {
+
+  container.querySelectorAll('img')
+    .forEach((img, i) => {
+      img.style.display = i === idx ? 'block' : 'none';
+    });
+}
+
+// ======================
+// 문의 기능
+// ======================
+function sendInquiry(name, index) {
+
+  const message = document.getElementById(`msg-${index}`).value;
+
+  if (!message.trim()) {
+    alert("문의 내용을 입력해주세요.");
+    return;
+  }
+
+  inquiries.unshift({
+    type: "문의",
+    geckoName: name,
+    message: message,
+    time: new Date().toLocaleString('ko-KR')
+  });
+
+  saveInquiries();
+
+  alert("✅ 문의가 접수되었습니다!");
+
+  document.getElementById(`msg-${index}`).value = "";
+}
+
+// ======================
+// 입양 기능
+// ======================
+function showAdoptOptions(index) {
+
+  const geckoName = geckos[index].name;
+
+  const choice = prompt(
+`${geckoName} 입양 방법 선택
+
+1. 도도시 배송
+2. 직접 방문
+
+번호 입력`
+  );
+
+  if (choice === "1") {
+    adoptDodo(index);
+  }
+
+  else if (choice === "2") {
+    adoptVisit(index);
+  }
+}
+
+function adoptDodo(index) {
+
+  const phone = prompt(
+`도도시 배송 신청
+
+전화번호를 입력해주세요.`
+  );
+
+  if (phone) {
+
+    inquiries.unshift({
+      type: "도도시 배송",
+      geckoName: geckos[index].name,
+      phone: phone,
+      time: new Date().toLocaleString('ko-KR')
+    });
+
+    saveInquiries();
+
+    alert("✅ 배송 신청 완료!");
+  }
+}
+
+function adoptVisit(index) {
+
+  const phone = prompt(
+`직접 방문 신청
+
+전화번호를 입력해주세요.`
+  );
+
+  if (phone) {
+
+    inquiries.unshift({
+      type: "직접 방문",
+      geckoName: geckos[index].name,
+      phone: phone,
+      time: new Date().toLocaleString('ko-KR')
+    });
+
+    saveInquiries();
+
+    alert("✅ 방문 신청 완료!");
+  }
+}
+
+// ======================
+// 관리자
+// ======================
+function adminLogin() {
+
+  const pw = prompt("관리자 비밀번호 입력");
+
+  if (pw === ADMIN_PASSWORD) {
+    adminPanel();
+  }
+
+  else {
+    alert("비밀번호 틀림");
+  }
+}
+
+function adminPanel() {
+
+  let html = `
+  <div id="adminOverlay"
+    style="
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.95);
+      z-index:9999;
+      overflow:auto;
+      padding:20px;
+    ">
+
+    <div style="
+      max-width:900px;
+      margin:auto;
+      background:white;
+      padding:30px;
+      border-radius:20px;
+    ">
+
+      <h2>관리자 페이지</h2>
+
+      <button onclick="changeLogo()"
+        style="padding:12px 20px;margin:5px;">
+        로고 변경
+      </button>
+
+      <button onclick="addGecko()"
+        style="padding:12px 20px;margin:5px;">
+        새 개체 등록
+      </button>
+
+      <button onclick="closeAdmin()"
+        style="padding:12px 20px;margin:5px;">
+        닫기
+      </button>
+
+      <div id="adminList" style="margin-top:30px;"></div>
+
+    </div>
+  </div>
+  `;
+
+  const div = document.createElement('div');
+  div.innerHTML = html;
+
+  document.body.appendChild(div);
+
+  renderAdminList();
+}
+
+function closeAdmin() {
+  const overlay = document.getElementById('adminOverlay');
+  if (overlay) overlay.remove();
+}
+
+function renderAdminList() {
+
+  const container = document.getElementById('adminList');
+
+  let html = '<h3>등록된 개체</h3>';
+
+  geckos.forEach((g, i) => {
+
+    html += `
+      <div style="
+        border:1px solid #ddd;
+        padding:15px;
+        margin-bottom:15px;
+        border-radius:12px;
+      ">
+
+        <strong>${g.name}</strong><br>
+
+        <button onclick="toggleStatus(${i})">
+          ${g.status === 'sale'
+            ? '🟢 분양중 → ⚫ 완료'
+            : '⚫ 완료 → 🟢 분양중'}
+        </button>
+
+        <button onclick="deleteGecko(${i})"
+          style="color:red;">
+          삭제
+        </button>
+
+      </div>
+    `;
+  });
+
+  html += `<h3>문의 / 입양 내역</h3>`;
+
+  inquiries.forEach(q => {
+
+    html += `
+      <div style="
+        border:1px solid #ddd;
+        padding:15px;
+        margin-bottom:10px;
+        border-radius:12px;
+      ">
+
+        <strong>${q.geckoName}</strong><br>
+
+        ${q.type ? `📦 ${q.type}<br>` : ''}
+
+        ${q.phone ? `📱 ${q.phone}<br>` : ''}
+
+        ${q.message ? `💬 ${q.message}<br>` : ''}
+
+        <small>${q.time}</small>
+
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// ======================
+// 상태 변경
+// ======================
+function toggleStatus(i) {
+
+  geckos[i].status =
+    geckos[i].status === 'sale'
+      ? 'sold'
+      : 'sale';
+
+  saveGeckos();
+
+  renderGeckos();
+
+  renderAdminList();
+}
+
+// ======================
+// 개체 추가
+// ======================
+async function addGecko() {
+
+  const name = prompt("개체 이름");
+
+  if (!name) return;
+
+  const input = document.createElement('input');
+
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+
+  input.onchange = async () => {
+
+    const images = [];
+
+    for (let file of input.files) {
+      const compressed =
+        await fileToBase64(file);
+
+      images.push(compressed);
+    }
+
+    const newGecko = {
+      id: Date.now(),
+
+      name: name,
+
+      price: prompt("가격") || "35만원",
+
+      weight: prompt("무게") || "18g",
+
+      birth: prompt("생년월일") || "2025-01-01",
+
+      gender: prompt("성별") || "수컷",
+
+      status: "sale",
+
+      images: images,
+
+      desc: prompt("설명") || "건강한 개체"
+    };
+
+    geckos.unshift(newGecko);
+
+    saveGeckos();
+
+    renderGeckos();
+
+    alert("✅ 개체 등록 완료!");
+  };
+
+  input.click();
+}
+
+// ======================
+// 삭제
+// ======================
+function deleteGecko(i) {
+
+  if (confirm("삭제하시겠습니까?")) {
+
+    geckos.splice(i, 1);
+
+    saveGeckos();
+
+    renderGeckos();
+
+    renderAdminList();
+  }
+}
+
+// ======================
+// 로고 변경
+// ======================
+async function changeLogo() {
+
+  const input = document.createElement('input');
+
+  input.type = 'file';
+  input.accept = 'image/*';
+
+  input.onchange = async () => {
+
+    if (input.files[0]) {
+
+      logoUrl =
+        await fileToBase64(input.files[0]);
+
+      localStorage.setItem('logoUrl', logoUrl);
+
+      updateLogo();
+
+      alert("로고 변경 완료");
+    }
+  };
+
+  input.click();
+}
+
+// 초기화
+updateLogo();
+renderGeckos();
+  </script>
